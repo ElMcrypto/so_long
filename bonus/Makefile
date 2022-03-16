@@ -6,35 +6,38 @@
 #    By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/26 17:20:51 by eelmoham          #+#    #+#              #
-#    Updated: 2022/03/16 01:38:34 by eelmoham         ###   ########.fr        #
+#    Updated: 2022/03/16 21:04:25 by eelmoham         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = so_long
+NAME = so_long_bonus
 
-SRCS  = ./mandatory/so_long.c \
-		./mandatory/ft_split.c \
-		./mandatory/func.c \
-		./mandatory/ft_putnbr.c \
-		./mandatory/map_errors.c \
-		./get_next_line/get_next_line.c \
-		./get_next_line/get_next_line_utils.c
+SRCS  = ./so_long_bonus.c \
+		./ft_split_bonus.c \
+		./ft_itoa.c \
+		./patrole.c \
+		./func_bonus.c \
+		./func_bonus_2.c \
+		./map_errors_bonus.c \
+		../get_next_line/get_next_line.c \
+		../get_next_line/get_next_line_utils.c
 
-header =./mandatory/so_long.h
+header =./so_long_bonus.h
 
 OBJ = $(SRCS:.c=.o)
+OBJS_BONUS = $(bonus:.c=.o)
 
 FLAGS =gcc -Wall -Wextra -Werror 
 
 LMLX = -lmlx -framework OpenGL -framework AppKit
 
 $(NAME): $(OBJ) $(header)
-	$(FLAGS) $(OBJ) $(LMLX) -o $(NAME)
+	$(FLAGS)  $(OBJ) $(LMLX) -o $(NAME)
 
 clean :
 	rm -f $(OBJ)
 fclean : clean
-	rm -f so_long
+	rm -f so_long_bonus
 
 re : fclean $(NAME)
 

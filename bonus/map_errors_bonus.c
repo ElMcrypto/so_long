@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map_errors.c                                       :+:      :+:    :+:   */
+/*   map_errors_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 13:03:13 by eelmoham          #+#    #+#             */
-/*   Updated: 2022/03/07 20:38:26 by eelmoham         ###   ########.fr       */
+/*   Updated: 2022/03/13 11:28:03 by eelmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include "so_long_bonus.h"
 
-int count_c (char **map , char c)
+int	count_c(char **map, char c)
 {
-	int i;
-	int j;
-	int count;
+	int	i;
+	int	j;
+	int	count;
 
 	count = 0;
 	i = 0;
@@ -34,9 +34,9 @@ int count_c (char **map , char c)
 	return (count);
 }
 
-void get_errors (char **map)
+void	get_errors(char **map)
 {
-	int c;
+	int	c;
 
 	c = 1;
 	if (count_c(map, 'P') != 1)
@@ -55,13 +55,15 @@ void get_errors (char **map)
 		write(2, "No collectible in youre map\n", 28);
 	}
 	if (c == 0)
-		exit(1);
+	{
+		free (map);
+		exit (1);
+	}
 }
 
-
-int lines(char **ptr)
+int	lines(char **ptr)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (ptr[i])
@@ -69,47 +71,44 @@ int lines(char **ptr)
 	return (i);
 }
 
-int check_line(char *ln)
+int	check_line(char *ln)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (ln[i])
-    {
-        if (ln[i] != '1')
-            return (1);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (ln[i])
+	{
+		if (ln[i] != '1')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
-void if_map (char **mp)
+void	if_map(char **mp)
 {
-    int i;
-    int j;
-    int error;
+	int	i;
+	int	j;
+	int	error;
 
-    i = 0;
-    error = 0;
-    j = lines(mp);
-    while (mp[i] && (i + 1) < j)
-    {
-        if (ft_strlen(mp[i])- 1 != ft_strlen(mp[i + 1]) - 1)
-            error  = 1;
-        i++;
-    }
-    i = 0;
-    while (mp[i])
-    {
-        if (mp[i][0] != '1' || mp[i][ft_strlen(mp[i]) - 1] != '1')
-            error = 1;
-        i++;
-    }
-    if  (check_line(mp[0]) == 1 || check_line(mp[j - 1]) == 1)
-        error = 1;
-    if (error == 1)
-    {
-        write (2, "found error on map\n", 19);
-        exit(1);
-    }
+	i = 0;
+	error = 0;
+	j = lines(mp);
+	while (mp[i] && (i + 1) < j)
+	{
+		if (ft_strlen(mp[i]) - 1 != ft_strlen(mp[i + 1]) - 1)
+			error = 1;
+		i++;
+	}
+	i = 0;
+	while (mp[i])
+	{
+		if (mp[i][0] != '1' || mp[i][ft_strlen(mp[i]) - 1] != '1')
+			error = 1;
+		i++;
+	}
+	if (check_line(mp[0]) == 1 || check_line(mp[j - 1]) == 1)
+		error = 1;
+	if (error == 1)
+		game_over("found error on map\n", mp);
 }

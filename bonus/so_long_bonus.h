@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
+/*   so_long_bonus.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 22:22:53 by eelmoham          #+#    #+#             */
-/*   Updated: 2022/03/16 02:13:36 by eelmoham         ###   ########.fr       */
+/*   Updated: 2022/03/16 21:04:34 by eelmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SO_LONG_H
-# define SO_LONG_H
+#ifndef SO_LONG_BONUS_H
+# define SO_LONG_BONUS_H
 
 # include <stdio.h>
 # include <mlx.h>
@@ -24,6 +24,13 @@ typedef struct s_player
 	int		x;
 	int		y;
 }	t_player;
+
+typedef struct s_enemy
+{
+	void	*enemy_img;
+	int		x;
+	int		y;
+}	t_x;
 
 typedef struct s_exit
 {
@@ -49,11 +56,13 @@ typedef struct s_data
 	void			*mlx;
 	void			*img;
 	void			*win;
+	void			*dark;
 	char			**map;
 	int				rows;
 	t_player		player;
 	t_exit			e;
 	t_collectible	c;
+	t_x				x;
 }	t_data;
 
 int		func(int key, t_data *obj);
@@ -64,10 +73,12 @@ int		lines(char **ptr);
 int		check_line(char *ln);
 void	if_map(char **mp);
 int		count_c(char **map, char c);
-int		set_map(t_data *data);
-int		game_over(char *msg, char **map);
+void	game_over(char *msg, char **map);
 int		ft_strncmp(const char *s1, const char *s2, int from, size_t n);
-void	ft_putnbr(int n);
+int		lennbr(int n);
+char	*ft_itoa(int n);
+int		animation(t_data *data);
+int		patrole(t_data *data);
+int		set_map(t_data *data);
 int		close_game(int key, t_data *obj);
-void	move(int x, int y, t_data *obj);
 #endif
