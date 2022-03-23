@@ -6,19 +6,11 @@
 /*   By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 19:33:08 by eelmoham          #+#    #+#             */
-/*   Updated: 2022/03/16 01:14:47 by eelmoham         ###   ########.fr       */
+/*   Updated: 2022/03/22 22:14:05 by eelmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
-
-int	game_over(char *msg, char **map)
-{
-	write (2, msg, ft_strlen(msg));
-	free(map);
-	exit(1);
-	return (0);
-}
 
 int	is_exit(t_data *data)
 {
@@ -31,49 +23,56 @@ int	is_exit(t_data *data)
 		return (0);
 }
 
+void	if_key(int key, t_data *obj)
+{
+	if (key == 13)
+		obj->player.y -= 1;
+	if (key == 2)
+		obj->player.x += 1;
+	if (key == 0)
+		obj->player.x -= 1;
+	if (key == 1)
+		obj->player.y += 1;
+}
+
 int	func(int key, t_data *obj)
 {
 	int			x;
 	int			y;
-	static int	count;
 
 	x = obj->player.x;
 	y = obj->player.y;
 	if (key == 53)
-		game_over("Game Over, You Lose\n", obj->map);
+		game_over("Game Over, You Lose\n", obj);
 	if (key == 13 || key == 2 || key == 0 || key == 1)
 	{
 		mlx_clear_window(obj->mlx, obj->win);
 		obj->map[y][x] = '0';
-		if (key == 13)
-			obj->player.y -= 1;
-		if (key == 2)
-			obj->player.x += 1;
-		if (key == 0)
-			obj->player.x -= 1;
-		if (key == 1)
-			obj->player.y += 1;
+		if_key(key, obj);
 		obj->true = 1;
 	}
+	else
+		obj->true = 0;
 	move(x, y, obj);
 	return (0);
 }
 
-void	check_element(char **map)
+void	check_element(t_data *data)
 {
 	int	i;
 	int	j;
 
 	i = 0;
 	j = 0;
-	while (map[i])
+	while (data->map[i])
 	{
 		j = 0;
-		while (map[i][j])
+		while (data->map[i][j])
 		{
-			if ((map[i][j] != '1') && (map[i][j] != '0') && (map[i][j] != 'E')
-				&& (map[i][j] != 'P') && (map[i][j] != 'C'))
-				game_over("wrong map\n", map);
+			if ((data->map[i][j] != '1') && (data->map[i][j] != '0')
+				&& (data->map[i][j] != 'E')
+				&& (data->map[i][j] != 'P') && (data->map[i][j] != 'C'))
+				game_over("error\nwrong map\n", data);
 			j++;
 		}
 		i++;

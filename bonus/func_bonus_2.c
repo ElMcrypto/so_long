@@ -6,7 +6,7 @@
 /*   By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 19:45:31 by eelmoham          #+#    #+#             */
-/*   Updated: 2022/03/16 21:22:17 by eelmoham         ###   ########.fr       */
+/*   Updated: 2022/03/22 22:00:34 by eelmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,6 @@ int	lennbr(int n)
 		i++;
 	}
 	return (i);
-}
-
-void	game_over(char *msg, char **map)
-{
-	write (2, msg, ft_strlen(msg));
-	free (map);
-	exit(1);
 }
 
 void	set_new_map(t_data *data)
@@ -61,6 +54,7 @@ void	set_new_map(t_data *data)
 int	close_game(int key, t_data *obj)
 {
 	(void) key;
+	(void) obj;
 	write(2, "Game closed successfully\n", 25);
 	exit(1);
 	return (0);
@@ -73,13 +67,13 @@ int	animation(t_data *data)
 
 	i++;
 	if (i <= 20)
-		data->c.collectible_img = mlx_xpm_file_to_image(data->mlx, "../x/1.xpm",
+		data->c.collectible_img = mlx_xpm_file_to_image(data->mlx, "./x/1.xpm",
 				&s[0], &s[1]);
 	else if (i <= 40)
-		data->c.collectible_img = mlx_xpm_file_to_image(data->mlx, "../x/2.xpm",
+		data->c.collectible_img = mlx_xpm_file_to_image(data->mlx, "./x/2.xpm",
 				&s[0], &s[1]);
 	else if (i <= 60)
-		data->c.collectible_img = mlx_xpm_file_to_image(data->mlx, "../x/3.xpm",
+		data->c.collectible_img = mlx_xpm_file_to_image(data->mlx, "./x/3.xpm",
 				&s[0], &s[1]);
 	if (i == 60)
 		i = 0;

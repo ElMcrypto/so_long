@@ -6,7 +6,7 @@
 /*   By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 21:27:34 by eelmoham          #+#    #+#             */
-/*   Updated: 2022/03/16 21:05:45 by eelmoham         ###   ########.fr       */
+/*   Updated: 2022/03/20 00:10:13 by eelmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,9 @@ void	set_x(t_data *data)
 
 void	mv(int x, int y, t_data *data)
 {
-	if (data->map[data->x.y][data->x.x] == 'E')
+	if (data->map[y][x] == 'P')
+		game_over("enemy killed you\n", data);
+	else if (data->map[data->x.y][data->x.x] == 'E')
 		return ;
 	else
 	{
@@ -90,4 +92,10 @@ int	patrole(t_data *data)
 		i = 0;
 	set_x(data);
 	return (0);
+}
+
+void	print_error(char *msg)
+{
+	write (2, msg, ft_strlen(msg));
+	exit(1);
 }

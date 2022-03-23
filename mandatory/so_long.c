@@ -6,7 +6,7 @@
 /*   By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 15:54:19 by eelmoham          #+#    #+#             */
-/*   Updated: 2022/03/16 01:22:37 by eelmoham         ###   ########.fr       */
+/*   Updated: 2022/03/20 23:59:09 by eelmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,34 @@
 
 char	**read_map(char *str)
 {
-	int		fd;
-	char	*line;
-	char	*hold_map;
-	char	**map;
-	char	*temp;
+	t_read_map	rd;
 
-	fd = open(str, O_RDONLY);
-	if (fd == -1)
-		game_over("Error : Don't find the map file", map);
-	hold_map = ft_strdup("");
-	line = get_next_line(fd);
-	while (line)
+	rd.fd = open(str, O_RDONLY);
+	if (rd.fd == -1)
+		print_error("error\nmap not found.\n");
+	rd.hold_map = ft_strdup("");
+	rd.line = get_next_line(rd.fd);
+	if (!rd.line)
+		print_error("error\nWRONG MAP.\n");
+	if (rd.line[0] == '\n')
+		print_error("error\nWRONG MAP.\n");
+	while (rd.line)
 	{
-		if (line[0] == '\n')
+		if (rd.line[0] == '\n')
 			break ;
-		temp = hold_map;
-		hold_map = ft_strjoin(hold_map, line);
-		free(line);
-		free(temp);
-		line = get_next_line(fd);
+		rd.temp = rd.hold_map;
+		rd.hold_map = ft_strjoin(rd.hold_map, rd.line);
+		free(rd.line);
+		free(rd.temp);
+		rd.line = get_next_line(rd.fd);
 	}
-	map = ft_split(hold_map, '\n');
-	free (hold_map);
-	return (map);
+	if_error_map_new_line(rd.hold_map);
+	rd.map = ft_split(rd.hold_map, '\n');
+	free (rd.hold_map);
+	return (rd.map);
 }
 
-void	generat_map(t_data *data, int row, int i, int x)
+void	generat_map(t_data *data, int row, int i)
 {
 	if (data->map[row][i] == 'P')
 	{
@@ -58,12 +59,8 @@ void	generat_map(t_data *data, int row, int i, int x)
 	}
 	else if (data->map[row][i] == 'E')
 	{
-		if (x == 1)
-			mlx_put_image_to_window (data->mlx, data->win, data->e.exit_img,
-				i * 20, row * 20);
-		else
-			mlx_put_image_to_window (data->mlx, data->win, data->img,
-				i * 20, row * 20);
+		mlx_put_image_to_window (data->mlx, data->win, data->e.exit_img,
+			i * 20, row * 20);
 		data->e.x = i;
 		data->e.y = row;
 	}
@@ -86,7 +83,7 @@ int	set_map(t_data *data)
 					i * 20, row * 20);
 			else if (data->map[row][i] == 'P' || data->map[row][i] == 'C' ||
 				data->map[row][i] == 'E')
-				generat_map(data, row, i, data->c_is_zero);
+				generat_map(data, row, i);
 			i++;
 		}
 		row++;
@@ -102,7 +99,11 @@ void	get_data(t_data *data)
 	data->w = data->len_lines * SZ;
 	data->h = lines(data->map) * SZ;
 	data->mlx = mlx_init();
+	if (!data->mlx)
+		game_over("error\n mlx error", data);
 	data->win = mlx_new_window(data->mlx, data->w, data->h, "eelmoham");
+	if (!data->win)
+		game_over("error\nwindow error", data);
 	data->img = mlx_xpm_file_to_image(data->mlx, "x/w.xpm", &i[0], &i[1]);
 	data->e.exit_img = mlx_xpm_file_to_image(data->mlx, "x/e.xpm",
 			&i[0], &i[1]);
@@ -119,21 +120,23 @@ int	main(int ar, char **av)
 
 	if (ar != 2)
 	{
-		write(2, "Wrong argument\n", 15);
+		write(2, "error\nWrong argument\n", 21);
 		exit(1);
 	}
 	if (ft_strncmp(av[1], ".ber", ft_strlen(av[1]) - 4, ft_strlen(av[1])) != 0)
 	{
-		write(2, "path map file should be like : \n\t\t\t\texemple.ber\n", 48);
+		write(2, "error\npath map file should be like : \n\t\t\t\texemple.ber\n", 54);
 		exit(1);
 	}
 	data.map = read_map(av[1]);
 	if (!data.map)
-		return (0);
-	check_element(data.map);
-	get_errors(data.map);
-	if_map(data.map);
+		game_over("error\nno map\n", &data);
+	check_element(&data);
+	get_errors(&data);
 	get_data(&data);
+	if_map(&data);
+	if (data.rows == data.len_lines)
+		game_over("error\nuse rectongle map", &data);
 	mlx_hook(data.win, 2, (1L << 0), func, &data);
 	mlx_hook(data.win, 17, 0, close_game, &data);
 	mlx_loop(data.mlx);

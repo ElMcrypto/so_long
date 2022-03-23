@@ -6,7 +6,7 @@
 /*   By: eelmoham <eelmoham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 13:03:13 by eelmoham          #+#    #+#             */
-/*   Updated: 2022/03/13 11:28:03 by eelmoham         ###   ########.fr       */
+/*   Updated: 2022/03/22 22:04:36 by eelmoham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,31 +34,16 @@ int	count_c(char **map, char c)
 	return (count);
 }
 
-void	get_errors(char **map)
+void	get_errors(t_data *data)
 {
-	int	c;
-
-	c = 1;
-	if (count_c(map, 'P') != 1)
-	{
-		c = 0;
-		write(2, "more or less then 1 player\n", 27);
-	}
-	if (count_c(map, 'E') != 1)
-	{
-		c = 0;
-		write(2, "more or less then 1 map exit\n", 29);
-	}
-	if (count_c(map, 'C') < 1)
-	{
-		c = 0;
-		write(2, "No collectible in youre map\n", 28);
-	}
-	if (c == 0)
-	{
-		free (map);
-		exit (1);
-	}
+	if (count_c(data->map, 'P') != 1)
+		game_over("error\nThe map must contain 1 player\n", data);
+	if (count_c(data->map, 'E') < 1)
+		game_over("error\nThe map must contain at least 1 exit,\n", data);
+	if (count_c(data->map, 'C') < 1)
+		game_over("error\nThe map must contain at least 1 collectible\n", data);
+	if (count_c(data->map, 'X') < 1)
+		game_over("error\nThe map must contain at least 1 enemy\n", data);
 }
 
 int	lines(char **ptr)
@@ -85,7 +70,7 @@ int	check_line(char *ln)
 	return (0);
 }
 
-void	if_map(char **mp)
+void	if_map(t_data *data)
 {
 	int	i;
 	int	j;
@@ -93,22 +78,23 @@ void	if_map(char **mp)
 
 	i = 0;
 	error = 0;
-	j = lines(mp);
-	while (mp[i] && (i + 1) < j)
+	j = lines(data->map);
+	while (data->map[i] && (i + 1) < j)
 	{
-		if (ft_strlen(mp[i]) - 1 != ft_strlen(mp[i + 1]) - 1)
+		if (ft_strlen(data->map[i]) - 1 != ft_strlen(data->map[i + 1]) - 1)
 			error = 1;
 		i++;
 	}
 	i = 0;
-	while (mp[i])
+	while (data->map[i])
 	{
-		if (mp[i][0] != '1' || mp[i][ft_strlen(mp[i]) - 1] != '1')
+		if (data->map[i][0] != '1'
+			|| data->map[i][ft_strlen(data->map[i]) - 1] != '1')
 			error = 1;
 		i++;
 	}
-	if (check_line(mp[0]) == 1 || check_line(mp[j - 1]) == 1)
+	if (check_line(data->map[0]) == 1 || check_line(data->map[j - 1]) == 1)
 		error = 1;
 	if (error == 1)
-		game_over("found error on map\n", mp);
+		game_over("error\nfound error on map\n", data);
 }
